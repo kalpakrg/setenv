@@ -34,7 +34,14 @@ function setenv_whitelist () {
     else 
         echo "Directory $current_dir is already in whitelist."
     fi
-} 
+}
+
+function setenv_whitelist_remove () {
+    current_dir=`pwd`
+    tmpfile=$(mktemp)
+    grep -vFx "$current_dir" ~/.setenv-whitelist > $tmpfile
+    cp $tmpfile ~/.setenv-whitelist
+}  
 
 function setenv_show_whitelist () {
     cat ~/.setenv-whitelist
