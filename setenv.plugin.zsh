@@ -1,3 +1,4 @@
+
 _setenv_run() {
     if [ -x ".setenv" ] ; then 
         execute=1
@@ -21,6 +22,10 @@ _setenv_run() {
 }
 
 function setenv_run () {
+    if [ ! -f ~/.setenv-whitelist ]; then
+        touch ~/.setenv-whitelist
+    fi
+
     _setenv_run
 }
 
@@ -47,5 +52,8 @@ function setenv_show_whitelist () {
     cat ~/.setenv-whitelist
 } 
 
-chpwd_functions+=(setenv_run)
+test_fn="setenv_run"
+if [[ -z ${(M)chpwd_functions:#${test_fn}} ]]; then
+    chpwd_functions+=(setenv_run)
+fi
 
