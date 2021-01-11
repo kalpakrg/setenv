@@ -1,9 +1,23 @@
+if [[ $SETENV_CONFIG_PATH && -d $SETENV_CONFIG_PATH ]] ; then
+	true
+elif [ -d $XDG_CONFIG_HOME ] ; then
+	SETENV_CONFIG_PATH=$XDG_CONFIG_HOME/setenv
+	if [ ! -d $SETENV_CONFIG_PATH ] ; then
+		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=~/
+	fi
+elif [ -d $HOME/.config ] ; then
+	SETENV_CONFIG_PATH=$HOME/.config/setenv
+	if [ ! -d $SETENV_CONFIG_PATH ] ; then
+		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=~/
+	fi
+fi
+export SETENV_WHITELIST=$SETENV_CONFIG_PATH/.setenv-whitelist
 
 _setenv_run() {
     if [ -x ".setenv" ] ; then 
         execute=1
         current_dir=`pwd`
-        grep -Fx "$current_dir" ~/.setenv-whitelist &> /dev/null
+        grep -Fx "$current_dir" $SETENV_WHITELIST &> /dev/null
         
         if [ 1 -eq $? ] ; then
         	echo "Directory $current_dir is not in setenv whitelist, but contains a .setenv file, do you still want to execute it? (y/n): "
@@ -22,8 +36,8 @@ _setenv_run() {
 }
 
 function setenv_run () {
-    if [ ! -f ~/.setenv-whitelist ]; then
-        touch ~/.setenv-whitelist
+    if [ ! -f $SETENV_WHITELIST ]; then
+        touch $SETENV_WHITELIST
     fi
 
     _setenv_run
@@ -31,11 +45,11 @@ function setenv_run () {
 
 function setenv_whitelist () {
     current_dir=`pwd`
-    grep -Fx "$current_dir" ~/.setenv-whitelist &> /dev/null
+    grep -Fx "$current_dir" $SETENV_WHITELIST &> /dev/null
 
     if [ 1 -eq $? ];
     then
-        pwd >> ~/.setenv-whitelist
+        pwd >> $SETENV_WHITELIST
     else 
         echo "Directory $current_dir is already in whitelist."
     fi
@@ -44,12 +58,12 @@ function setenv_whitelist () {
 function setenv_whitelist_remove () {
     current_dir=`pwd`
     tmpfile=$(mktemp)
-    grep -vFx "$current_dir" ~/.setenv-whitelist > $tmpfile
-    cp $tmpfile ~/.setenv-whitelist
+    grep -vFx "$current_dir" $SETENV_WHITELIST > $tmpfile
+    cp $tmpfile $SETENV_WHITELIST
 }  
 
 function setenv_show_whitelist () {
-    cat ~/.setenv-whitelist
+    cat $SETENV_WHITELIST
 } 
 
 test_fn="setenv_run"
