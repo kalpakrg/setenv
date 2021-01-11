@@ -3,12 +3,12 @@ if [[ $SETENV_CONFIG_PATH && -d $SETENV_CONFIG_PATH ]] ; then
 elif [ -d $XDG_CONFIG_HOME ] ; then
 	SETENV_CONFIG_PATH=$XDG_CONFIG_HOME/setenv
 	if [ ! -d $SETENV_CONFIG_PATH ] ; then
-		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=~/
+		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=$HOME
 	fi
 elif [ -d $HOME/.config ] ; then
 	SETENV_CONFIG_PATH=$HOME/.config/setenv
 	if [ ! -d $SETENV_CONFIG_PATH ] ; then
-		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=~/
+		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=$HOME
 	fi
 fi
 export SETENV_WHITELIST=$SETENV_CONFIG_PATH/.setenv-whitelist
