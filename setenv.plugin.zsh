@@ -5,7 +5,7 @@ elif [[ -n $XDG_CONFIG_HOME && -d $XDG_CONFIG_HOME ]] ; then
 	if [ ! -d $SETENV_CONFIG_PATH ] ; then
 		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=$HOME
 	fi
-elif [[ -d $HOME/.config ]] ; then
+elif [ -d $HOME/.config ] ; then
 	SETENV_CONFIG_PATH=$HOME/.config/setenv
 	if [ ! -d $SETENV_CONFIG_PATH ] ; then
 		mkdir $SETENV_CONFIG_PATH &> /dev/null || SETENV_CONFIG_PATH=$HOME
