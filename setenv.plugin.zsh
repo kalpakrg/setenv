@@ -16,8 +16,7 @@ export SETENV_WHITELIST=$SETENV_CONFIG_PATH/.setenv-whitelist
 _setenv_run() {
     if [ -x ".setenv" ] ; then 
         execute=1
-        current_dir=`pwd`
-        grep -Fx "$current_dir" $SETENV_WHITELIST &> /dev/null
+        grep -Fx "$PWD" $SETENV_WHITELIST &> /dev/null
         
         if [ 1 -eq $? ] ; then
         	echo "Directory $current_dir is not in setenv whitelist, but contains a .setenv file, do you still want to execute it? (y/n): "
@@ -30,7 +29,7 @@ _setenv_run() {
 
         if [ 1 -eq $execute ] ; then
             echo "File .setenv exists and is executable, will execute it."
-            source `pwd`/.setenv
+            source "$PWD/.setenv"
         fi
     fi
 }
@@ -44,21 +43,19 @@ function setenv_run () {
 }
 
 function setenv_whitelist () {
-    current_dir=`pwd`
-    grep -Fx "$current_dir" $SETENV_WHITELIST &> /dev/null
+    grep -Fx "$PWD" $SETENV_WHITELIST &> /dev/null
 
     if [ 1 -eq $? ];
     then
         pwd >> $SETENV_WHITELIST
     else 
-        echo "Directory $current_dir is already in whitelist."
+        echo "Directory $PWD is already in whitelist."
     fi
 }
 
 function setenv_whitelist_remove () {
-    current_dir=`pwd`
     tmpfile=$(mktemp)
-    grep -vFx "$current_dir" $SETENV_WHITELIST > $tmpfile
+    grep -vFx "$PWD" $SETENV_WHITELIST > $tmpfile
     cp $tmpfile $SETENV_WHITELIST
 }  
 
